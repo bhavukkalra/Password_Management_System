@@ -1,4 +1,4 @@
-# Foobar
+# Password Management System
 
 A password management system built using nodejs, expressjs and mongodb
 
@@ -30,7 +30,7 @@ Please make sure to update tests as appropriate.
 
 ## Testing 
 
-The testing and Styling has been done by @Necrolynn47. Head over to [TestCases][/TestCases.pdf] to get to know about it more
+The testing and Styling has been done by Necrolynn47. Head over to ![TestCases][/TestCases.pdf] to get to know about it more
 
 
 ## License
