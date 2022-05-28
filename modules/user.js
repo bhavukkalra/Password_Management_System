@@ -16,7 +16,7 @@ async function connectDB() {
     console.log('Connected')
 
   } catch (error) {
-    console.log(`DB Connection Error: ${err.message}`)
+    console.log(`DB Connection Error: ${error.message}`)
   }
 };
 connectDB();
@@ -50,10 +50,6 @@ var userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  mobile:{
-    type: String,
-    required: true
-  }
 
 });
 

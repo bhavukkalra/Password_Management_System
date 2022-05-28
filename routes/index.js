@@ -141,7 +141,7 @@ router.post('/', function (req, res, next) {
     } catch (error) {
       res.render('index', {
         title: 'Password Management System',
-        msg: 'Invalid Username/Password and error occured bitch',
+        msg: 'Invalid Username/Password and error occured',
       });  
     }
 
@@ -191,77 +191,41 @@ router.post('/signup', checkUsername, checkEmail, function (req, res, next) {
       msg: 'Password does not match',
     });
   } else {
-    // DO TWO FACTOR AUTH AND ASK FOR PHONE NUMBER TO BE SAVED
-    //uname, email ,password
     console.log(username, email, password);
     localStorage.setItem('temp_username', username);
     localStorage.setItem('temp_email', email);
     localStorage.setItem('temp_password', password);
     console.log(localStorage.temp_username);
-    res.render('enter_mobile', {message : "Please enter your Mobile number for verification, ", title: "Password Management System"})
+    console.log(localStorage.temp_mobile_number);
+
+    password = localStorage.temp_password;
+    username = localStorage.temp_password;
+    mobile = localStorage.temp_mobile_number
+    email = localStorage.temp_email
+
+    final_password = bcrypt.hashSync(password, 10);
+    var userDetails = new userModule({
+    username: username,
+    email: email,
+    password: final_password,
+    mobile: mobile
+   });
+
+    console.log('saved user is - ', userDetails, ' and  mobile is - ', userDetails.mobile);
+
+    userDetails.save((err, doc) => {
+    if (err) throw err;
+    res.render('signup', {
+      title: 'Password Management System',
+      msg: 'User Registered Successfully',
+    });
+  });
   }
 });
 
 
-router.post('/verify', (req, res) => {
-  nexmo.verify.request({
-    number: req.body.number,
-    
-    brand: 'ACME Corp',
-    workflow_id: 6
-  }, (error, result) => {
-    if(result.status != 0) {
-      res.render('enter_mobile', { message: result.error_text , title: "Password Managament System"})
-    } else {
-      localStorage.setItem('temp_mobile_number', req.body.number);
-      res.render('check', { requestId: result.request_id, message: '', title: "Password Management System" })
-    }
-  })
-});
 
-router.post('/check', (req, res) => {
-  nexmo.verify.check({
-    request_id: req.body.requestId,
-    code: req.body.code
-  }, (error, result) => {
-    console.log(result, req.body.reques);
-    if(result.status != 0) {
-      localStorage.removeItem('temp_username');
-      localStorage.removeItem('temp_email');
-      localStorage.removeItem('temp_password');
-      localStorage.removeItem('temp_mobile_number');
 
-      res.render('enter_mobile', { message: result.error_text, title: "Password Managament System"})
-    } else {
-      console.log(localStorage.temp_mobile_number);
-
-      password = localStorage.temp_password;
-      username = localStorage.temp_password;
-      mobile = localStorage.temp_mobile_number
-      email = localStorage.temp_email
-
-      final_password = bcrypt.hashSync(password, 10);
-      var userDetails = new userModule({
-      username: username,
-      email: email,
-      password: final_password,
-      mobile: mobile
-     });
-
-      console.log('saved user is - ', userDetails, ' and  mobile is - ', userDetails.mobile);
-
-      userDetails.save((err, doc) => {
-      if (err) throw err;
-      res.render('signup', {
-        title: 'Password Management System',
-        msg: 'User Registered Successfully',
-      });
-    });
-
-      
-    }
-  })
-})
 
 
 
