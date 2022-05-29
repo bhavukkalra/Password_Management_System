@@ -10,7 +10,7 @@ Use the package manager [npm](https://docs.npmjs.com/) to develop Password Manag
 npm install
 ```
 # Setting up .env file!
-    This Project requires Integration of Vonage API for mesaage sending for Two Factor Authentication. Which requires making a free acoount there.
+This Project requires Integration of Vonage API for mesaage sending for Two Factor Authentication. Which requires making a free acoount there.
 
   - API_KEY = [Your Vonage API KEY]
   - API_SECTER = [Your Vonage API SECRET]
@@ -22,6 +22,10 @@ npm install
 ```bash
 npm start
 ```
+
+## Accesing the WebApp
+- [Local Host Link](http://localhost:3000/)
+- [Heroku Deployed Link](https://pure-river-90234.herokuapp.com/)
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
