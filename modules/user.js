@@ -5,9 +5,10 @@ mongoose.Promise = global.Promise;
 mongoose.set("debug", true);
 
 const MONGODB_URL = process.env.MONGODB_URL;
+console.log("MONGODB_URL - -", MONGODB_URL)
 async function connectDB() {
   try{
-    console.log("Trying connecting");
+    console.log("Trying connecting  ");
     const connect = await mongoose.connect(MONGODB_URL, {
       useUnifiedTopology: true,
       useNewUrlParser: true,
@@ -15,7 +16,7 @@ async function connectDB() {
     });
     console.log('Connected')
 
-  } catch (error) {
+  } catch (err) {
     console.log(`DB Connection Error: ${err.message}`)
   }
 };
