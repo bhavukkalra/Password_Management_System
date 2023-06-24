@@ -37,5 +37,14 @@ Please make sure to update tests as appropriate.
 The testing and Styling has been done by [Necrolynn47](https://github.com/Necrolynn47). Head over to [TestCases](https://github.com/bhavukkalra/Password_Management_System/blob/master/TestCases.pdf) to get to know about it more
 
 
+## 2023 Update
+
+The previous version of the app used `Vonage API` for the 2-factor Authentication, for both 
+sign in and sign up flows
+
+The current code is now being migrated to use `twilio` verification service
+- Which is much cheaper
+- Doesn't have the sligtly annoying feature of 5 minute wait time for the user, In case of wrong OTP entered
+
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
