@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "node ./bin/www.js",
+    "vercel-build": "echo hello"
   },
   "dependencies": {
     "bcrypt": "^5.0.0",

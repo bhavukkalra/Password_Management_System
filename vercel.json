@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "password-management-system",
+  "builds": [
+    { "src": "./bin/www.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "/bin" }
+  ]
+}
