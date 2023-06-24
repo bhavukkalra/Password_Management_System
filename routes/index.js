@@ -185,7 +185,8 @@ router.post('/', function (req, res, next) {
     
     else{
       console.log('this is data element', data);
-      // console.log('this is error', err);
+      console.log('this is error', err);
+      console.log("Found the input sign in user in the DB")
       console.log('this is mobile', data.mobile);
     try {
       
@@ -217,35 +218,20 @@ router.post('/', function (req, res, next) {
       // });
 
 
-      //   const channel = "sms";
-      //   let verificationRequest;
-      //
-      //   try {
-      //     verificationRequest = await twilio.verify.services(VERIFICATION_SID)
-      //       .verifications
-      //       .create({ to: req.user.phoneNumber, channel });
-      //   } catch (e) {
-      //     logger.error(e);
-      //     return res.status(500).send(e);
-      //   }
-      //
-      //   logger.debug(verificationRequest);
-      //
-      //   return res.render('verify', { title: 'Verify', user: req.user, errors });
-      // }
-      //
-      // throw new Error('User already has `access secret content` role.');
-
       let responseOTPRequest = sendOTPRequest(data.mobile);
 
-      if(responseOTPRequest != "pending"){
-        res.render('index', { msg: responseOTPRequest.error, title: "Password Management System"});
-      }else{
 
-        res.render('check-signin', { requestId: "1", message: `a OTP has been sent to ${data.mobile}`, title: "Password Management System" })
-      }
+      responseOTPRequest.then((responseOTPRequestObject) => {
 
+        if(responseOTPRequestObject != "pending"){
+          res.render('index', { msg: "Error occured in sending OTP request, Please try again with the login", title: "Password Management System"});
+        }else{
 
+          console.log("Sending this registered Mobile to be checked - ", data.mobile)
+          res.render('check-signin', { alertDivStatus: "hidden", message: `an OTP has been sent to ${data.mobile}`, title: "Password Management System", registeredMobile: data.mobile });
+        }
+
+      })
 
     } else {
       res.render('index', {
@@ -268,24 +254,66 @@ router.post('/', function (req, res, next) {
 router.post('/check-signin', function (req, res, next){
 
 
-  nexmo.verify.check({
-    request_id: req.body.requestId,
-    code: req.body.code
-  }, (error, result) => {
-    
-    console.log('Correct uptil here=======');
-    if(result.status != 0) {
-      res.render('index', { msg: 'Incorrect code entered, Please Wait for few minutes before trying again', title: "Password Management system" })
-    } else {
-      //user login and code entered successfully
+  // nexmo.verify.check({
+  //   request_id: req.body.requestId,
+  //   code: req.body.code
+  // }, (error, result) => {
+  //
+  //   console.log('Correct uptil here=======');
+  //   if(result.status != 0) {
+  //     res.render('index', { msg: 'Incorrect code entered, Please Wait for few minutes before trying again', title: "Password Management system" })
+  //   } else {
+  //     //user login and code entered successfully
+  //
+  //     var token = jwt.sign({ userId: localStorage.getItem('temp_userID') }, 'loginToken');
+  //     localStorage.setItem('userToken', token);
+  //     localStorage.setItem('loginUser', localStorage.getItem('temp_uname'));
+  //     res.redirect('/dashboard');
+  //
+  //   }
+  // })
 
-      var token = jwt.sign({ userId: localStorage.getItem('temp_userID') }, 'loginToken');
-      localStorage.setItem('userToken', token);
-      localStorage.setItem('loginUser', localStorage.getItem('temp_uname'));
-      res.redirect('/dashboard');
+
+  let code = req.body.code;
+  let registeredMobileNumber = req.body.registeredMobile;
+
+  console.log("Sign In flow")
+  console.log("Input code - ", code)
+  console.log("Registered mobile Number  - ", registeredMobileNumber)
+
+
+  const OTPVerifyResult = verifyOTPRequest(code, registeredMobileNumber);
+
+  OTPVerifyResult.then((OTPVerifyResult) => {
+
+    console.log('Respnse for OTP verify request - ', OTPVerifyResult);
+    console.log("OTPVerifyResult", OTPVerifyResult)
+    // Do I get a promise here or a string (Study async await then)
+
+    if(OTPVerifyResult == "approved"){
+
+
+
+          var token = jwt.sign({ userId: localStorage.getItem('temp_userID') }, 'loginToken');
+          localStorage.setItem('userToken', token);
+          localStorage.setItem('loginUser', localStorage.getItem('temp_uname'));
+          res.redirect('/dashboard');
+
+    }else{
+      console.log("Wrong OTP")
+
+
+      res.render('check-signin', { alertDivStatus: "", message: `Wrong OTP entered, Please enter the correct OTP`, title: "Password Management System", registeredMobile: registeredMobileNumber });
+
+
+      // res.render('index', { msg: 'Incorrect code entered, Please Wait for few minutes before trying again', title: "Password Management system" })
+
 
     }
+
   })
+
+
 })
 
 /*
@@ -445,9 +473,11 @@ router.post('/check', (req, res) => {
 
       console.log(localStorage.temp_mobile_number);
 
+
+      // Sign up flow
       let password = localStorage.temp_password;
       let username = localStorage.temp_password;
-      let mobile = localStorage.temp_mobile_number
+      let mobile = localStorage.temp_mobile_number;
       let email = localStorage.temp_email
 
       let final_password = bcrypt.hashSync(password, 10);
