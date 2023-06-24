@@ -34,6 +34,44 @@ if (typeof localStorage === 'undefined' || localStorage === null) {
  */
 
 
+// Note - For this to work a username with "test" should already exist in the deployed DB
+// Or the further interactions won't work
+router.get('/test-user', function (req, res, next) {
+  let username = "test";
+
+    console.log("Skip Sign In")
+    // Sign with the unique user Id provided by Mongo DB not the username
+  var checkUser = userModule.findOne({ username: "test" });
+  // console.log("The user is ==", checkUser);
+  checkUser.exec((err, data) => {
+    if (err){
+      console.log('error is triggerred and error is', err)
+      res.render('index', {
+        title: 'Password Management System',
+        msg: "Error occured while quering the DB, Please try the request again",
+      });
+
+    }
+    else if(data == null){
+      res.render('index', {
+        title: 'Password Management System',
+        msg: 'Test user not configured in the DB. Please add the user with username test',
+      });
+
+    }
+
+    else{
+      var getUserID = data._id;
+      var token = jwt.sign({ userId: getUserID }, 'loginToken');
+      localStorage.setItem('userToken', token);
+      localStorage.setItem('loginUser', username);
+      res.redirect('/dashboard');
+
+    }
+  });
+
+
+});
 
 /*
 ----------------------SKIP SIGN IN FLOW LOGIC ENDS HERE------------------
@@ -53,19 +91,6 @@ router.post('/', function (req, res, next) {
   let password = req.body.password;
   console.log("Entered username = ", username)
   console.log("Entered password = ", password)
-
-  if(username === "temp_demo" && password === "test"){
-    console.log("Skip Sign In")
-
-    var token = jwt.sign({ userId: username }, 'loginToken');
-    localStorage.setItem('userToken', token);
-    localStorage.setItem('loginUser', username);
-    res.redirect('/dashboard');
-    return;
-  }
-
-
-
 
   //FOR FUTURE ROUTES
   localStorage.setItem('temp_uname', username);
