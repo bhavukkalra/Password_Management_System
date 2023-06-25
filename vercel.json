@@ -5,6 +5,6 @@
     { "src": "./bin/www.js", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/(.*)", "dest": "/bin" }
+    { "src": "/(.*)", "dest": "/bin/www.js" }
   ]
 }
