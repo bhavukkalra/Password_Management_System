@@ -5,6 +5,14 @@
     { "src": "./bin/www.js", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/(.*)", "dest": "/bin/www.js" }
+    {
+      "src": "/.*",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "X-Requested-With, Content-Type, Accept"
+      },
+      "dest": "/index.js"
+    }
   ]
 }
