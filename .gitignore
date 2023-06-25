@@ -75,6 +75,7 @@ build/Release
 
 # Scratch (As these are development dependent)
 scratch/*
+scratch/temp_uname
 
 # Dependency directories
 node_modules/
