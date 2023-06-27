@@ -53,6 +53,9 @@ The current code is now being migrated to use `twilio` verification service
 - The final app will be hosted on AWS and will be moved from Railway
 - TODO - Incoming, Terraform and Infrastructure diagrams.
 
+## Update on the backend user getting persisted
+It seems like this problem has been there from the starting. New logic is required
+
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
